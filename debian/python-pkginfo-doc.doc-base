@@ -1,0 +1,11 @@
+Document: python-pkginfo
+Title: pkginfo - Python 2/3 module to query metadata from packages
+Author: Tres Seaver
+Abstract: pkginfo provides an API for querying the distutils metadata written
+ in the PKG-INFO file inside a source distribution (an sdist), or into the
+ EGG-INFO directory of an installed distribution.
+Section: Programming/Python
+
+Format: HTML
+Index: /usr/share/doc/python-pkginfo-doc/html/index.html
+Files: /usr/share/doc/python-pkginfo-doc/html/*.html

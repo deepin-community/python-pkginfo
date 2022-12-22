@@ -1,0 +1,37 @@
+Source: python-pkginfo
+Section: python
+Priority: optional
+Maintainer: Debian Python Team <team+python@tracker.debian.org>
+Uploaders: Jan Dittberner <jandd@debian.org>
+Build-Depends: debhelper-compat (= 13),
+               dh-python,
+               python3-all,
+               python3-setuptools,
+               python3-sphinx,
+Standards-Version: 4.2.1
+Homepage: https://pypi.python.org/pypi/pkginfo/
+Vcs-Git: https://salsa.debian.org/python-team/packages/python-pkginfo.git
+Vcs-Browser: https://salsa.debian.org/python-team/packages/python-pkginfo
+Rules-Requires-Root: no
+
+Package: python-pkginfo-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}, ${sphinxdoc:Depends}
+Multi-Arch: foreign
+Description: Python module to query metadata from packages documentation
+ This package provides an API for querying the distutils metadata written in
+ the PKG-INFO file inside a source distribution (an sdist), or into the
+ EGG-INFO directory of an installed distribution.
+
+Package: python3-pkginfo
+Architecture: all
+Depends: python3-pkg-resources, ${misc:Depends}, ${python3:Depends}
+Recommends: python-pkginfo-doc (=${binary:Version})
+Description: Python 3.x module to query metadata from packages
+ This package provides an API for querying the distutils metadata written in
+ the PKG-INFO file inside a source distribution (an sdist), or into the
+ EGG-INFO directory of an installed distribution.
+ .
+ This package contains the Python 3 version of the library
+ In addition, this package contains the 'pkginfo' executable
