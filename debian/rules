@@ -1,6 +1,8 @@
 #!/usr/bin/make -f
 export PYBUILD_NAME=pkginfo
 export PYBUILD_AFTER_INSTALL_python3=rm -rf '{destdir}/{install_dir}/pkginfo/tests'
+export PYBUILD_BEFORE_TEST=cp -R pkginfo/tests/funny pkginfo/tests/manky pkginfo/tests/silly pkginfo/tests/wonky {build_dir}/pkginfo/tests
+export PYBUILD_AFTER_TEST=rm -rf {build_dir}/pkginfo/tests/funny {build_dir}/pkginfo/tests/manky {build_dir}/pkginfo/tests/silly {build_dir}/pkginfo/tests/wonky
 
 %:
 	dh $@ --with python3,sphinxdoc --buildsystem=pybuild
