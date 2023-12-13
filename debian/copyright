@@ -4,12 +4,12 @@ Upstream-Contact: Tres Seaver <tseaver@agendaless.com>
 Source: http://pypi.python.org/pypi/pkginfo/
 
 Files: *
-Copyright: 2009-2018 Agendaless Consulting
+Copyright: 2009-2021 Agendaless Consulting
 License: Expat
 
 Files: debian/*
 Copyright: 2012 Jan Dittberner
-           2018 Stefano Rivera <stefanor@debian.org>
+           2021 Stefano Rivera <stefanor@debian.org>
 License: Expat
 
 License: Expat

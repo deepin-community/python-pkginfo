@@ -1,7 +1,33 @@
+python-pkginfo (1.8.2-2) unstable; urgency=medium
+
+  * Team upload.
+  [ Debian Janitor ]
+  * Update standards version to 4.6.1, no changes needed.
+
+  [ Athos Ribeiro ]
+  * Run tests with pytest instead of setup.py test.
+
+ -- Athos Ribeiro <athoscribeiro@gmail.com>  Sun, 04 Dec 2022 09:36:59 -0300
+
+python-pkginfo (1.8.2-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+  * Build-Depends: python3-wheel, for tests.
+  * Bump Standards-Version to 4.6.0, no changes needed.
+  * Bump watch file version to 4.
+  * Update homepage.
+  * Drop patch, no longer needed.
+  * Add autopkgtest.
+  * Extend upstream metadata.
+  * Bump copyright years.
+
+ -- Stefano Rivera <stefanor@debian.org>  Sun, 05 Dec 2021 12:21:48 -0400
+
 python-pkginfo (1.7.1-1) unstable; urgency=medium
 
   * Team upload.
-  
+
   [ Emmanuel Arias ]
   * d/patches: Remove already applies patches for upstream.
   * New upstream version 1.7.1 (Closes: #998251).
@@ -13,7 +39,7 @@ python-pkginfo (1.7.1-1) unstable; urgency=medium
   * Remove constraints unnecessary since buster:
     + Build-Depends: Drop versioned constraint on python-setuptools and
       python3-setuptools.
-  
+
  -- Emmanuel Arias <eamanu@yaerobi.com>  Sat, 30 Oct 2021 14:46:37 -0300
 
 python-pkginfo (1.4.2-3) unstable; urgency=medium
