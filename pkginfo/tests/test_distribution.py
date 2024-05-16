@@ -1,5 +1,33 @@
 import unittest
 
+class Test__must_decode(unittest.TestCase):
+
+    def _callFUT(self, arg):
+        from pkginfo.distribution import _must_decode
+        return _must_decode(arg)
+
+    def test_w_bytes_latin1(self):
+        TO_ENCODE = u'\u00C9'  # capital E w/ acute accent
+        encoded = TO_ENCODE.encode("latin-1")
+        decoded = self._callFUT(encoded)
+        self.assertEqual(decoded, TO_ENCODE)
+
+    def test_w_bytes_utf8(self):
+        TO_ENCODE = u'\u00C9'  # capital E w/ acute accent
+        encoded = TO_ENCODE.encode("utf-8")
+        decoded = self._callFUT(encoded)
+        self.assertEqual(decoded, TO_ENCODE)
+
+    def test_w_unicode(self):
+        ARG = u'\u00C9'  # capital E w/ acute accent
+        decoded = self._callFUT(ARG)
+        self.assertEqual(decoded, ARG)
+
+    def test_w_object(self):
+        ARG = object()
+        decoded = self._callFUT(ARG)
+        self.assertIs(decoded, ARG)
+
 class DistributionTests(unittest.TestCase):
 
     def _getTargetClass(self):
@@ -15,6 +43,7 @@ class DistributionTests(unittest.TestCase):
     def test_ctor_defaults(self):
         sdist = self._makeOne(None)
         self.assertEqual(sdist.metadata_version, None)
+        # version 1.0
         self.assertEqual(sdist.name, None)
         self.assertEqual(sdist.version, None)
         self.assertEqual(sdist.platforms, ())
@@ -27,10 +56,12 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(sdist.author, None)
         self.assertEqual(sdist.author_email, None)
         self.assertEqual(sdist.license, None)
+        # version 1.1
         self.assertEqual(sdist.classifiers, ())
         self.assertEqual(sdist.requires, ())
         self.assertEqual(sdist.provides, ())
         self.assertEqual(sdist.obsoletes, ())
+        # version 1.2
         self.assertEqual(sdist.maintainer, None)
         self.assertEqual(sdist.maintainer_email, None)
         self.assertEqual(sdist.requires_python, None)
@@ -39,6 +70,11 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(sdist.provides_dist, ())
         self.assertEqual(sdist.obsoletes_dist, ())
         self.assertEqual(sdist.project_urls, ())
+        # version 2.1
+        self.assertEqual(sdist.provides_extras, ())
+        self.assertEqual(sdist.description_content_type, None)
+        # version 2.2
+        self.assertEqual(sdist.dynamic, ())
 
     def test_extractMetadata_raises_NotImplementedError(self):
         # 'extractMetadata' calls 'read', which subclasses must override.
@@ -49,6 +85,10 @@ class DistributionTests(unittest.TestCase):
         # Subclasses must override 'read'.
         dist = self._makeOne(None)
         self.assertRaises(NotImplementedError, dist.read)
+
+    def test_parse_given_unicode(self):
+        dist = self._makeOne()
+        dist.parse(u'Metadata-Version: 1.0\nName: lp722928_c3') # no raise
 
     def test_parse_Metadata_Version_1_0(self):
         from pkginfo.distribution import HEADER_ATTRS_1_0
@@ -81,6 +121,22 @@ class DistributionTests(unittest.TestCase):
         self.assertEqual(dist.metadata_version, '2.1')
         self.assertEqual(list(dist),
                          [x[1] for x in HEADER_ATTRS_2_1])
+
+    def test_parse_Metadata_Version_2_2(self):
+        from pkginfo.distribution import HEADER_ATTRS_2_2
+        dist = self._makeOne(None)
+        dist.parse('Metadata-Version: 2.2')
+        self.assertEqual(dist.metadata_version, '2.2')
+        self.assertEqual(list(dist),
+                         [x[1] for x in HEADER_ATTRS_2_2])
+
+    def test_parse_Metadata_Version_2_3(self):
+        from pkginfo.distribution import HEADER_ATTRS_2_3
+        dist = self._makeOne(None)
+        dist.parse('Metadata-Version: 2.3')
+        self.assertEqual(dist.metadata_version, '2.3')
+        self.assertEqual(list(dist),
+                         [x[1] for x in HEADER_ATTRS_2_3])
 
     def test_parse_Metadata_Version_unknown(self):
         dist = self._makeOne(None)
@@ -398,7 +454,32 @@ class DistributionTests(unittest.TestCase):
                           'Repository, http://svn.example.com/grail',
                          ])
 
-    def test_parse_given_unicode(self):
-        from pkginfo._compat import u
-        dist = self._makeOne()
-        dist.parse(u('Metadata-Version: 1.0\nName: lp722928_c3')) # no raise
+    # Metadata version 2.1, defined in PEP 566.
+    def test_parse_Provides_Extra_single(self):
+        dist = self._makeOne('2.1')
+        dist.parse('Provides-Extra: pdf')
+        self.assertEqual(list(dist.provides_extras), ['pdf'])
+
+    def test_parse_Provides_Extra_multiple(self):
+        dist = self._makeOne('2.1')
+        dist.parse('Provides-Extra: pdf\n'
+                   'Provides-Extra: tex')
+        self.assertEqual(list(dist.provides_extras), ['pdf', 'tex'])
+
+    def test_parse_Distribution_Content_Type_single(self):
+        dist = self._makeOne('2.1')
+        dist.parse('Description-Content-Type: text/plain')
+        self.assertEqual(dist.description_content_type, 'text/plain')
+
+    # Metadata version 2.2, defined in PEP 643.
+    def test_parse_Dynamic_single(self):
+        dist = self._makeOne('2.2')
+        dist.parse('Dynamic: Platforms')
+        self.assertEqual(list(dist.dynamic), ['Platforms'])
+
+    def test_parse_Dynamic_multiple(self):
+        dist = self._makeOne('2.2')
+        dist.parse('Dynamic: Platforms\n'
+                   'Dynamic: Supported-Platforms')
+        self.assertEqual(list(dist.dynamic),
+                         ['Platforms', 'Supported-Platforms'])

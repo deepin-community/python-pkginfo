@@ -1,4 +1,6 @@
+import pathlib
 import shutil
+import sys
 import tempfile
 import unittest
 
@@ -37,6 +39,14 @@ class SDistTests(unittest.TestCase):
         d, _ = os.path.split(__file__)
         filename = '%s/../../docs/examples/nopkginfo-0.1.zip' % d
         self.assertRaises(ValueError, self._makeOne, filename)
+
+    def test_ctor_w_tar(self):
+        import os
+        d, _ = os.path.split(__file__)
+        filename = '%s/../../docs/examples/mypackage-0.1.tar' % d
+        sdist = self._makeOne(filename)
+        self.assertEqual(sdist.metadata_version, '1.0')
+        self._checkSample(sdist, filename)
 
     def test_ctor_w_gztar(self):
         import os
@@ -89,6 +99,14 @@ class SDistTests(unittest.TestCase):
         self._checkSample(sdist, filename)
         self._checkClassifiers(sdist)
 
+    def test_ctor_w_bogus(self):
+        import os
+        d, _ = os.path.split(__file__)
+        filename = '%s/../../docs/examples/mypackage-0.1.bogus' % d
+
+        with self.assertRaises(ValueError):
+            self._makeOne(filename, metadata_version='1.1')
+
 
 class UnpackedMixin(object):
     def setUp(self):
@@ -106,19 +124,24 @@ class UnpackedMixin(object):
     def _getTopDirectory(self):
         import os
         topnames = os.listdir(self.__tmpdir)
-        if len(topnames) == 1:
-            return os.path.join(self.__tmpdir, topnames[0])
-        else:
-            return self.__tmpdir
+        assert len(topnames) == 1
+        return os.path.join(self.__tmpdir, topnames[0])
 
     def _getLoadFilename(self):
         return self._getTopDirectory()
 
     def _makeOne(self, filename=None, metadata_version=None):
-
         archive, _, _ = self._getTargetClass()._get_archive(filename)
+
+        # Work around Python 3.12 tarfile warning.
+        kwargs = {}
+        if sys.version_info >= (3, 12):
+            fn_path = pathlib.Path(filename)
+            if ".tar" in fn_path.suffixes:
+                kwargs["filter"] = "data"
+
         try:
-            archive.extractall(self.__tmpdir)
+            archive.extractall(self.__tmpdir, **kwargs)
         finally:
             archive.close()
 
