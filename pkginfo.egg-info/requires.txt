@@ -1,4 +1,5 @@
 
 [testing]
-nose
-coverage
+pytest
+pytest-cov
+wheel

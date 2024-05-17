@@ -1,7 +1,15 @@
+import io
 from email.parser import Parser
 
-from ._compat import StringIO
-from ._compat import must_decode
+def _must_decode(value):
+    if type(value) is bytes:
+        try:
+            return value.decode('utf-8')
+        except UnicodeDecodeError:
+            return value.decode('latin1')
+    return value
+
+must_decode = _must_decode # deprecated compatibility alias FBO twine.
 
 
 def parse(fp):
@@ -63,12 +71,20 @@ HEADER_ATTRS_2_1 = HEADER_ATTRS_1_2 + ( # PEP 566
     ('Description-Content-Type', 'description_content_type', False)
 )
 
+HEADER_ATTRS_2_2 = HEADER_ATTRS_2_1 + ( # PEP 643
+    ('Dynamic', 'dynamic', True),
+)
+
+HEADER_ATTRS_2_3 = HEADER_ATTRS_2_2  # PEP 685
+
 HEADER_ATTRS = {
     '1.0': HEADER_ATTRS_1_0,
     '1.1': HEADER_ATTRS_1_1,
     '1.2': HEADER_ATTRS_1_2,
     '2.0': HEADER_ATTRS_2_0,
     '2.1': HEADER_ATTRS_2_1,
+    '2.2': HEADER_ATTRS_2_2,
+    '2.3': HEADER_ATTRS_2_3,
 }
 
 class Distribution(object):
@@ -103,6 +119,8 @@ class Distribution(object):
     # version 2.1
     provides_extras = ()
     description_content_type = None
+    # version 2.2
+    dynamic = ()
 
     def extractMetadata(self):
         data = self.read()
@@ -115,7 +133,7 @@ class Distribution(object):
         return HEADER_ATTRS.get(self.metadata_version, [])
 
     def parse(self, data):
-        fp = StringIO(must_decode(data))
+        fp = io.StringIO(_must_decode(data))
         msg = parse(fp)
 
         if 'Metadata-Version' in msg and self.metadata_version is None:

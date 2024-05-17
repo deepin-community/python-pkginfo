@@ -1,0 +1,26 @@
+From: Stefano Rivera <stefanor@debian.org>
+Date: Thu, 11 Jan 2024 16:20:21 -0400
+Subject: Run pytest as a python module
+
+In the Debian package build time, pytest is installed outside the
+virtualenv, so tox needs it to be added to the allowlist, if we want to
+execute the binary directly.
+
+Forwarded: not-needed
+---
+ tox.ini | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tox.ini b/tox.ini
+index 068c11b..c6d9a4b 100644
+--- a/tox.ini
++++ b/tox.ini
+@@ -12,7 +12,7 @@ commands =
+ [testenv]
+ usedevelop = true
+ commands = 
+-    pytest --cov=pkginfo --cov-append --cov-report=
++    python -m pytest --cov=pkginfo --cov-append --cov-report=
+ deps =
+     wheel
+     pytest

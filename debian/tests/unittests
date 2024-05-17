@@ -1,0 +1,20 @@
+#!/bin/sh
+set -efu
+
+pys="$(py3versions -r 2> /dev/null)"
+
+cp -a docs "$AUTOPKGTEST_TMP"
+mkdir -p "$AUTOPKGTEST_TMP"/notpkginfo
+cp -a pkginfo/tests "$AUTOPKGTEST_TMP"/notpkginfo
+cat >> "$AUTOPKGTEST_TMP/notpkginfo/tests/__init__.py" <<EOF
+import sys
+sys.modules['pkginfo.tests'] = sys.modules[__name__]
+EOF
+
+cd "$AUTOPKGTEST_TMP"
+
+for py in $pys; do
+	echo "=== $py ==="
+	# Not compatible with running outside the source tree:
+	$py -m pytest notpkginfo/tests -k 'not (test_ctor_w_path or test_ctor_w_egg_info_as_file)'
+done
