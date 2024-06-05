@@ -10,7 +10,7 @@ else:
         'test_suite': 'pkginfo.tests',
         'zip_safe': False,
         'extras_require': {
-            'testing': ['nose', 'coverage'],
+            'testing': ['pytest', 'pytest-cov', 'wheel'],
         },
     }
 
@@ -20,8 +20,8 @@ CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 setup(
     name='pkginfo',
-    version='1.7.1',
-    description='Query metadatdata from sdists / bdists / installed packages.',
+    version='1.10.0',
+    description='Query metadata from sdists / bdists / installed packages.',
     platforms=['Unix', 'Windows'],
     long_description='\n\n'.join([README, CHANGES]),
     keywords='distribution sdist installed metadata',
@@ -33,11 +33,12 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Software Development :: Libraries :: Python Modules',
@@ -49,5 +50,7 @@ setup(
         ]
     },
     packages=['pkginfo', 'pkginfo.tests'],
+    package_data={'pkginfo': ['py.typed', '*.pyi']},
+    python_requires='>=3.6',
     **extras
 )

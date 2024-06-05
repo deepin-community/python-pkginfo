@@ -1,0 +1,30 @@
+From: Andreas Tille <tille@debian.org>
+Date: Thu, 11 Jan 2024 16:19:58 -0400
+Subject: Do not test namespaced module since it is not packaged for Debian
+ yet
+
+Last-Update: Thu, 11 Jan 2024 14:00:22 +0100
+---
+ pkginfo/tests/test_installed.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/pkginfo/tests/test_installed.py b/pkginfo/tests/test_installed.py
+index 4daccdb..231cd86 100644
+--- a/pkginfo/tests/test_installed.py
++++ b/pkginfo/tests/test_installed.py
+@@ -105,6 +105,7 @@ class InstalledTests(unittest.TestCase):
+         self.assertEqual(installed.package, wheel)
+         self.assertEqual(installed.package_name, 'wheel')
+ 
++    @unittest.skip("Namespaced is not packaged for Debian yet thus do not test")
+     def test_namespaced_pkg_installed_via_setuptools(self):
+         where, _ = os.path.split(__file__)
+         wonky = os.path.join(where, 'wonky')
+@@ -122,6 +123,7 @@ class InstalledTests(unittest.TestCase):
+             sys.modules.pop('namespaced.wonky', None)
+             sys.modules.pop('namespaced', None)
+ 
++    @unittest.skip("Namespaced is not packaged for Debian yet thus do not test")
+     def test_namespaced_pkg_installed_via_pth(self):
+         # E.g., installed by a Linux distro
+         where, _ = os.path.split(__file__)

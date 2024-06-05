@@ -4,7 +4,6 @@ import zipfile
 
 
 from .distribution import Distribution
-from .distribution import must_decode
 from .distribution import parse
 
 
@@ -54,9 +53,3 @@ class Wheel(Distribution):
             close()
 
         raise ValueError('No METADATA in archive: %s' % fqn)
-
-    def parse(self, data):
-        super(Wheel, self).parse(data)
-        fp = io.StringIO(must_decode(data))
-        msg = parse(fp)
-        self.description = msg.get_payload()
