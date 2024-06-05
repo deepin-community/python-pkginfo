@@ -1,2 +1,10 @@
-Repository: https://code.launchpad.net/pkginfo
-Repository-Browse: https://code.launchpad.net/pkginfo
+---
+Bug-Database: https://bugs.launchpad.net/pkginfo
+Bug-Submit: https://bugs.launchpad.net/pkginfo/+filebug
+Changelog: https://bazaar.launchpad.net/~tseaver/pkginfo/trunk/view/head:/CHANGES.txt
+Documentation: https://pythonhosted.org/pkginfo/
+Registry:
+  - Name: PyPI
+    Entry: pkginfo
+Repository-Browse: https://bazaar.launchpad.net/~tseaver/pkginfo/trunk/files
+Repository: https://code.launchpad.net/~tseaver/pkginfo/trunk

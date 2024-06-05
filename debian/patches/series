@@ -1,1 +1,2 @@
-0001-Disable-tests-failing-in-Debian-build.patch
+do_not_test_namespaced.patch
+tox-pytest.patch
