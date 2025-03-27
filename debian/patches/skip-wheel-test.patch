@@ -1,0 +1,17 @@
+Description: See https://bugs.launchpad.net/pkginfo/+bug/2090840
+  for the reason for the conditional in this test.  Debian's flit
+  version is still 3.9.0, so this test currently breaks.
+Forwarded: not-needed
+Author: Julian Gilbey <jdg@debian.org>
+
+--- a/pkginfo/tests/test_installed.py
++++ b/pkginfo/tests/test_installed.py
+@@ -128,6 +128,8 @@
+     assert(installed.package == pkginfo.tests.funny)
+     assert(installed.package_name == 'pkginfo.tests.funny')
+ 
++# See https://bugs.launchpad.net/pkginfo/+bug/2090840
++@pytest.mark.skip(reason="Debian flit version is still 3.9.0 so this breaks")
+ def test_installed_ctor_w_dist_info():
+     from packaging import version
+     import wheel

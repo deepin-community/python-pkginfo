@@ -1,12 +1,32 @@
 #!/usr/bin/make -f
 export PYBUILD_NAME=pkginfo
 export PYBUILD_AFTER_INSTALL_python3=rm -rf '{destdir}/{install_dir}/pkginfo/tests'
-export PYBUILD_BEFORE_TEST=cp -R pkginfo/tests/funny pkginfo/tests/manky pkginfo/tests/silly pkginfo/tests/wonky {build_dir}/pkginfo/tests
-export PYBUILD_AFTER_TEST=rm -rf {build_dir}/pkginfo/tests/funny {build_dir}/pkginfo/tests/manky {build_dir}/pkginfo/tests/silly {build_dir}/pkginfo/tests/wonky
+
+# Work around https://bugs.debian.org/1051837
+egg_info := \
+	pkginfo/tests/dodgy/namespaced.dodgy-0.1.egg-info \
+	pkginfo/tests/funny/funny.egg-info \
+	pkginfo/tests/manky/namespaced.manky-0.1.egg-info
+define save-egg-info =
+for x in $(egg_info); do \
+	if [ ! -d "$$x.safe" ]; then cp -a "$$x" "$$x.safe"; fi; \
+done
+endef
+define restore-egg-info =
+for x in $(egg_info); do \
+	if [ -d "$$x.safe" ]; then rm -rf "$$x"; cp -a "$$x.safe" "$$x"; fi; \
+done
+endef
 
 %:
 	dh $@ --with sphinxdoc --buildsystem=pybuild
 
 override_dh_auto_build:
+	$(save-egg-info)
 	dh_auto_build --buildsystem=pybuild
 	LC_ALL=C PYTHONPATH=. http_proxy='http://127.0.0.1:9/' sphinx-build -N -bhtml docs build/sphinx/html
+
+override_dh_auto_clean:
+	$(save-egg-info)
+	dh_auto_clean
+	$(restore-egg-info)
