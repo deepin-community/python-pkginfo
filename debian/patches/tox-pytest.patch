@@ -11,11 +11,9 @@ Forwarded: not-needed
  tox.ini | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tox.ini b/tox.ini
-index 068c11b..c6d9a4b 100644
 --- a/tox.ini
 +++ b/tox.ini
-@@ -12,7 +12,7 @@ commands =
+@@ -13,7 +13,7 @@
  [testenv]
  usedevelop = true
  commands = 

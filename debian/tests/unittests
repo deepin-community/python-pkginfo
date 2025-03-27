@@ -1,7 +1,7 @@
 #!/bin/sh
 set -efu
 
-pys="$(py3versions -r 2> /dev/null)"
+pys="$(py3versions -s 2> /dev/null)"
 
 cp -a docs "$AUTOPKGTEST_TMP"
 mkdir -p "$AUTOPKGTEST_TMP"/notpkginfo
@@ -16,5 +16,5 @@ cd "$AUTOPKGTEST_TMP"
 for py in $pys; do
 	echo "=== $py ==="
 	# Not compatible with running outside the source tree:
-	$py -m pytest notpkginfo/tests -k 'not (test_ctor_w_path or test_ctor_w_egg_info_as_file)'
+	$py -m pytest notpkginfo/tests -k 'not (test_develop_ctor_w_path or test_installed_ctor_w_egg_info_as_file)'
 done
